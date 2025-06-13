@@ -15,9 +15,9 @@ jobs:
       matrix:
         include:
           - dockerfile: Dockerfile.producer
-            image: telemetry-producer
+            image: nhmesh-producer
           - dockerfile: Dockerfile.collector
-            image: telemetry-collector
+            image: nhmesh-collector
 
 
     steps:
@@ -44,6 +44,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       
+      - name: Get current date
+        id: date
+        run: echo "date=$(date --rfc-3339=seconds | sed 's/ /T/g')" >> $GITHUB_OUTPUT
+      
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -52,5 +56,11 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            BUILD_DATE=${{ steps.date.outputs.date }}
+            VCS_REF=${{ github.sha }}
+            VERSION=${{ github.ref_name }}
+            GITHUB_REPO=${{ github.repository }}
+            IMAGE_TITLE=${{ github.repository_owner }}/${{ matrix.image }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
