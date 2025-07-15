@@ -61,7 +61,10 @@ class NodeCache:
         Returns:
             bool: True if this is a new node, False if existing
         """
-        node_id = packet.get("from")
+        # Pulling the node ID from the packet. Note that this is expected to be the 
+        # hexadecimal string representation of the node ID. This is usually prefixed
+        # with an !
+        node_id = packet.get("fromId")
         if node_id is None:
             return False
             

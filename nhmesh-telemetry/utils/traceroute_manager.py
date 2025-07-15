@@ -318,8 +318,8 @@ class TracerouteManager:
                 # Submit traceroute to thread pool and wait with timeout
                 future = self._traceroute_executor.submit(
                     self.interface.sendTraceRoute, 
-                    dest=node_id, 
-                    hopLimit=10
+                    dest=node_id.replace("!", ""),  # Remove '!' prefix if present
+                    hopLimit=7
                 )
                 
                 try:
@@ -368,9 +368,12 @@ class TracerouteManager:
                 if self._is_node_in_backoff(node_id):
                     backoff_remaining = self._node_backoff_until[node_id] - time.time()
                     logging.info(f"[Traceroute] Node {node_id} is in backoff for {backoff_remaining/60:.1f} more minutes, re-queueing for later.")
+                    
                     # Re-queue the job for later processing
                     self._traceroute_queue.put((node_id, retries))
-                    # Pull the next job from the queue
+                    
+                    # Add a small delay to prevent busy loop when all nodes are in backoff
+                    time.sleep(5)
                     continue
                 
                 # Check global cooldown before processing

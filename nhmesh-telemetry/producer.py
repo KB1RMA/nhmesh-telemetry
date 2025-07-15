@@ -90,7 +90,7 @@ class MeshtasticMQTTHandler:
             packet (dict): The received packet dictionary
         """
         # Update node cache and get whether this is a new node
-        node_id = packet.get("from")
+        node_id = packet.get("fromId")
         if node_id is None:
             return
             
@@ -213,7 +213,7 @@ class MeshtasticMQTTHandler:
             logging.error(f"Unknown packet type: {type(packet)}")
             return
 
-        logging.info(f"[onReceive] Packet received from '{packet_dict.get("from", "unknown")}' to '{packet_dict.get("to", "unknown")}'")
+        logging.info(f"[onReceive] Packet received from '{packet_dict.get("fromId", "unknown")}' to '{packet_dict.get("to", "unknown")}'")
         logging.debug(f"[onReceive] Raw packet: {packet_dict}")
 
         self._update_cache_from_packet(packet_dict)
