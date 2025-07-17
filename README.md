@@ -1,5 +1,10 @@
 # nhmesh-telemetry
 
+> [!IMPORTANT]
+> This repository has been superceded by the following two repositories:
+> - https://github.com/NHMesh/nhmesh-producer
+> - https://github.com/NHMesh/nhmesh-telemetry
+
 ## Development
 
  - Install Python
